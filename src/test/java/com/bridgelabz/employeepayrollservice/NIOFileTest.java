@@ -27,5 +27,15 @@ public class NIOFileTest {
 
         Files.createDirectory(playPath);
         Assert.assertTrue(Files.exists(playPath));
+
+        IntStream.range(1, 10).forEach(cntr -> {
+            Path tempFile = Paths.get(playPath + "/temp" + cntr);
+            Assert.assertTrue(Files.notExists(tempFile));
+            try {
+                Files.createFile(tempFile);
+            } catch (IOException e) {
+                Assert.assertTrue(Files.exists(tempFile));
+            }
+        });
     }
 }
