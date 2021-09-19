@@ -37,5 +37,9 @@ public class NIOFileTest {
                 Assert.assertTrue(Files.exists(tempFile));
             }
         });
+        Files.list(playPath).filter(Files::isRegularFile).forEach(System.out::println);
+        Files.newDirectoryStream(playPath).forEach(System.out::println);
+        Files.newDirectoryStream(playPath, path -> path.toFile().isFile() && path.toString().startsWith("temp"))
+                .forEach(System.out::println);
     }
 }
