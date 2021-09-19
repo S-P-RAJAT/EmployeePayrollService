@@ -40,4 +40,16 @@ public class EmployeePayrollService {
             employeePayrollService.readEmployeePayrollData(consoleInputReader);
             employeePayrollService.writeEmployeePayrollData(IOService.CONSOLE_IO);
         }
+    public void printData(IOService ioservice) {
+        if (ioservice.equals(IOService.FILE_IO)) {
+            new EmployeePayrollFileIOService().printData();
+        }
+    }
+
+    public long countEntries(IOService ioservice) {
+        if (ioservice.equals(IOService.FILE_IO)) {
+            return new EmployeePayrollFileIOService().countEntries();
+        }
+        return 0;
+    }
     }
