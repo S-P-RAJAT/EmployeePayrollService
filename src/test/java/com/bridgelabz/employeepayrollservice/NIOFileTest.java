@@ -25,5 +25,7 @@ public class NIOFileTest {
         Files.deleteIfExists(playPath);
         Assert.assertTrue(Files.notExists(playPath));
 
+        Files.createDirectory(playPath);
+        Assert.assertTrue(Files.exists(playPath));
     }
 }
