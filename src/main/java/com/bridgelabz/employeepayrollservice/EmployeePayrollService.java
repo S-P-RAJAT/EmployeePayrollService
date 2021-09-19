@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class EmployeePayrollService {
 
+    public EmployeePayrollService() { }
+
     public enum IOService {
         CONSOLE_IO, FILE_IO, DB_IO, REST_IO
     }
@@ -33,13 +35,6 @@ public class EmployeePayrollService {
             new EmployeePayrollFileIOService().writeData(employeePayrollList);
         }
     }
-        public static void main (String[] args){
-            ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
-            EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
-            Scanner consoleInputReader = new Scanner(System.in);
-            employeePayrollService.readEmployeePayrollData(consoleInputReader);
-            employeePayrollService.writeEmployeePayrollData(IOService.CONSOLE_IO);
-        }
     public void printData(IOService ioservice) {
         if (ioservice.equals(IOService.FILE_IO)) {
             new EmployeePayrollFileIOService().printData();
@@ -52,4 +47,20 @@ public class EmployeePayrollService {
         }
         return 0;
     }
+    public long readEmployeePayrollData(IOService ioservice) {
+        if (ioservice.equals(IOService.FILE_IO)) {
+            this.employeePayrollList = new EmployeePayrollFileIOService().readData();
+            System.out.println("PARSED DATA FROM FILE: ");
+            this.employeePayrollList.forEach(System.out::println);
+        }
+        return this.employeePayrollList.size();
     }
+
+    public static void main(String[] args) {
+        ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
+        Scanner consoleInputReader = new Scanner(System.in);
+        employeePayrollService.readEmployeePayrollData(consoleInputReader);
+        employeePayrollService.writeEmployeePayrollData(IOService.CONSOLE_IO);
+    }
+}
