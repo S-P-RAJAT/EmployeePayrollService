@@ -16,10 +16,14 @@ public class NIOFileTest {
     private static final String PLAY_WITH_NIO = "TempPlayGround";
 
     @Test
-    public void givenPathWhenCheckedThenConfirm() {
+    public void givenPathWhenCheckedThenConfirm() throws IOException {
 
         Path homePath = Paths.get(HOME);
         Assert.assertTrue(Files.exists(homePath));
+
+        Path playPath = Paths.get(HOME + "/" + PLAY_WITH_NIO);
+        Files.deleteIfExists(playPath);
+        Assert.assertTrue(Files.notExists(playPath));
 
     }
 }
