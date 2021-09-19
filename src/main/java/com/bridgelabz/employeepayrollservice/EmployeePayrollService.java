@@ -6,13 +6,13 @@ import java.util.Scanner;
 
 public class EmployeePayrollService {
 
-    public enum I0Service {
-        CONSOLE_IO, FILE_I0, DB_I0, REST_I0
+    public enum IOService {
+        CONSOLE_IO, FILE_IO, DB_IO, REST_IO
     }
 
     private List<EmployeePayrollData> employeePayrollList;
 
-    public EmployeePayrollService(ArrayList<EmployeePayrollData> employeePayrollList) {
+    public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
         this.employeePayrollList = employeePayrollList;
     }
 
@@ -26,15 +26,18 @@ public class EmployeePayrollService {
         employeePayrollList.add(new EmployeePayrollData(id, name, salary));
     }
 
-    private void writeEmployeePayrollData() {
-        System.out.println("\nWriting Employee Payroll to Console\n" + employeePayrollList);
+    void writeEmployeePayrollData(IOService ioservice) {
+        if (ioservice.equals(IOService.CONSOLE_IO))
+            System.out.println("\nWriting Employee Payroll to Console\n" + employeePayrollList);
+        else if (ioservice.equals(IOService.FILE_IO)) {
+            new EmployeePayrollFileIOService().writeData(employeePayrollList);
+        }
     }
-
-    public static void main(String[] args) {
-        ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
-        EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
-        Scanner consoleInputReader = new Scanner(System.in);
-        employeePayrollService.readEmployeePayrollData(consoleInputReader);
-        employeePayrollService.writeEmployeePayrollData();
+        public static void main (String[] args){
+            ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+            EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
+            Scanner consoleInputReader = new Scanner(System.in);
+            employeePayrollService.readEmployeePayrollData(consoleInputReader);
+            employeePayrollService.writeEmployeePayrollData(IOService.CONSOLE_IO);
+        }
     }
-}
