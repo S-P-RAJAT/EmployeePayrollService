@@ -56,7 +56,7 @@ public class EmployeePayrollService {
             this.employeePayrollList = new EmployeePayrollFileIOService().readData();
             System.out.println("PARSED DATA FROM FILE: ");
             this.employeePayrollList.forEach(System.out::println);
-        } else{
+        } else if (ioservice.equals(IOService.DB_IO)){
             try {
                 this.employeePayrollList = new EmployeePayrollDBService().readData();
             } catch (SQLException e) {

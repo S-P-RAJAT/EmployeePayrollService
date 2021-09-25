@@ -1,6 +1,5 @@
 package com.bridgelabz.employeepayrollservice;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +34,6 @@ public class EmployeePayrollServiceTest {
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService=new EmployeePayrollService();
         List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
-        assertEquals(0, employeePayrollData.size());
+        assertEquals(4, employeePayrollData.size());
     }
 }
