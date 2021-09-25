@@ -1,5 +1,6 @@
 package com.bridgelabz.employeepayrollservice;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -50,13 +51,20 @@ public class EmployeePayrollService {
         return 0;
     }
 
-    public long readEmployeePayrollData(IOService ioservice) {
+    public List<EmployeePayrollData> readEmployeePayrollData(IOService ioservice) {
         if (ioservice.equals(IOService.FILE_IO)) {
             this.employeePayrollList = new EmployeePayrollFileIOService().readData();
             System.out.println("PARSED DATA FROM FILE: ");
             this.employeePayrollList.forEach(System.out::println);
+        } else{
+            try {
+                this.employeePayrollList = new EmployeePayrollDBService().readData();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return employeePayrollList;
         }
-        return this.employeePayrollList.size();
+        return this.employeePayrollList;
     }
 
     public static void main(String[] args) {

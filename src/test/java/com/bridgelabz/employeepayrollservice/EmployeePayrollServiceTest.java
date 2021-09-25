@@ -1,10 +1,13 @@
 package com.bridgelabz.employeepayrollservice;
 
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import com.bridgelabz.employeepayrollservice.EmployeePayrollService.*;
 
 public class EmployeePayrollServiceTest {
 
@@ -25,7 +28,13 @@ public class EmployeePayrollServiceTest {
     @Test
     public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-        long entries = employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.FILE_IO);
-        assertEquals(3, entries);
+        List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.FILE_IO);
+        assertEquals(3, employeePayrollData.size());
+    }
+    @Test
+    public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
+        EmployeePayrollService employeePayrollService=new EmployeePayrollService();
+        List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+        assertEquals(0, employeePayrollData.size());
     }
 }
