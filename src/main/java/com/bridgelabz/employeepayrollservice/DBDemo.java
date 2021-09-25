@@ -20,6 +20,14 @@ public class DBDemo {
             throw new IllegalStateException("lol", e);
         }
         listDrivers();
+        
+        try {
+			System.out.println("Connecting to database " + jdbcURL);
+			connection = DriverManager.getConnection(jdbcURL, userName, password);
+			System.out.println("Connection is successful: " + connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     private static void listDrivers() {
