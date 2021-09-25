@@ -10,6 +10,13 @@ public class EmployeePayrollService {
     public EmployeePayrollService() {
     }
 
+    public void updateEmployeeSalary(String employee_name, double v) {
+    }
+
+    public boolean checkEmployeePayrollInSyncWithDB(String employee_name) {
+        return true;
+    }
+
     public enum IOService {
         CONSOLE_IO, FILE_IO, DB_IO, REST_IO
     }

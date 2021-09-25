@@ -1,10 +1,12 @@
 package com.bridgelabz.employeepayrollservice;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.bridgelabz.employeepayrollservice.EmployeePayrollService.*;
 
@@ -35,5 +37,14 @@ public class EmployeePayrollServiceTest {
         EmployeePayrollService employeePayrollService=new EmployeePayrollService();
         List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         assertEquals(4, employeePayrollData.size());
+    }
+    @Test
+    public void givenNewSalaryForEmployee_WhenUpdates_ShouldSyncWithDB() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+
+        employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+        employeePayrollService.updateEmployeeSalary("Terisa", 400000.00);
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
+        assertTrue(result);
     }
 }
