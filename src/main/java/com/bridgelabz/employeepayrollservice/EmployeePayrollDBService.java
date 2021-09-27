@@ -27,14 +27,20 @@ public class EmployeePayrollDBService {
         String password = "Mysql@3q#";
         Connection connection;
 
-        System.out.println("Connecting to database" + jdbcURL);
-        connection = DriverManager.getConnection(jdbcURL, userName, password);
-        System.out.println("Connection is successfull" + connection);
+        try {
+            connection = DriverManager.getConnection(jdbcURL, userName, password);
+            System.out.println("Connection is successfull" + connection);
+        } catch (SQLSyntaxErrorException e) {
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE, "Entered is a "+e.getMessage());
+        } catch (SQLException e){
+            e.printStackTrace();
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.SQL_EXCEPTION, "Invalid credentials! - " + e.getMessage());
+        }
 
         return connection;
     }
 
-    public List<EmployeePayrollData> readData() throws SQLException {
+    public List<EmployeePayrollData> readData() throws EmployeePayrollException {
         String sql = "SELECT * FROM employee_payroll";
         List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
         try (Connection connection = this.getConnection()) {
@@ -43,7 +49,7 @@ public class EmployeePayrollDBService {
             employeePayrollList = this.getEmployeePayrollData(result);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.INVALID_TABLE, "Invalid table name! - " + e.getMessage());
         }
         return employeePayrollList;
     }
@@ -117,7 +123,7 @@ public class EmployeePayrollDBService {
     private void prepareStatementToUpdateEmployeeData() {
         try {
             Connection connection = this.getConnection();
-            String sql = "\"update employee_payroll set basic_pay=? where name =?";
+            String sql = "update employee_payroll set basic_pay=? where name =?";
             employeePayrollUpdateDataStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
             e.printStackTrace();

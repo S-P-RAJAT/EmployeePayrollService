@@ -65,7 +65,7 @@ public class EmployeePayrollService {
         return 0;
     }
 
-    public List<EmployeePayrollData> readEmployeePayrollData(IOService ioservice) {
+    public List<EmployeePayrollData> readEmployeePayrollData(IOService ioservice) throws EmployeePayrollException {
         if (ioservice.equals(IOService.FILE_IO)) {
             this.employeePayrollList = new EmployeePayrollFileIOService().readData();
             System.out.println("PARSED DATA FROM FILE: ");
@@ -79,10 +79,10 @@ public class EmployeePayrollService {
         }
         return this.employeePayrollList;
     }
-    public void updateEmployeeSalary(String name, double salary) {
+    public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException {
         int result = employeePayrollDBService.updateEmployeeData(name, salary);
         if (result == 0)
-            return;
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNSUCCESFUL_UPDATE, "Update operation failed! - ");
         EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
         if (employeePayrollData != null)
             employeePayrollData.salary = salary;

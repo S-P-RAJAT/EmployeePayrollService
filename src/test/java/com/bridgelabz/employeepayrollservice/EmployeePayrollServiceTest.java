@@ -14,13 +14,28 @@ import com.bridgelabz.employeepayrollservice.EmployeePayrollService.*;
 public class EmployeePayrollServiceTest {
 
     private static EmployeePayrollService employeePayrollService;
+    private static List<EmployeePayrollData> employeePayrollData;
 
     @BeforeClass
     public static void beforeClass() {
         employeePayrollService = new EmployeePayrollService();
-
+        try {
+            employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+        } catch (EmployeePayrollException e){
+            assertEquals(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE,e.type);
+            e.printStackTrace();
+        }
     }
 
+    @Test
+    public void givenDatabase_WhenWrong_ShouldThrowCustomException(){
+        try {
+            employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+        } catch (EmployeePayrollException e){
+            assertEquals(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE,e.type);
+            e.printStackTrace();
+        }
+    }
     @Test
     public void given3EmployeesWhenWrittenToFileShouldMatchEmployeeEntries() {
         EmployeePayrollData[] arrayOfEmps = {
@@ -36,28 +51,35 @@ public class EmployeePayrollServiceTest {
     }
 
     @Test
-    public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
+    public void givenFileOnReadingFromFileShouldMatchEmployeeCount() throws EmployeePayrollException{
         List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.FILE_IO);
         assertEquals(3, employeePayrollData.size());
     }
     @Test
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
-        List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+
         assertEquals(4, employeePayrollData.size());
+
     }
     @Test
     public void givenNewSalaryForEmployee_WhenUpdates_ShouldSyncWithDB() {
 
-        employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
-        employeePayrollService.printData(IOService.FILE_IO);
-        employeePayrollService.updateEmployeeSalary("Terisa", 400000.00);
-        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
-        assertTrue(result);
+        try {
+            employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+            employeePayrollService.printData(IOService.FILE_IO);
+            employeePayrollService.updateEmployeeSalary("Terisa", 400000.00);
+            boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
+            assertTrue(result);
+        } catch (EmployeePayrollException e){
+            assertEquals(EmployeePayrollException.ExceptionType.UNSUCCESFUL_UPDATE,e.type);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() {
-        employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         String startDate = "2018-01-01";
         String endDate = "2019-12-01";
         List<EmployeePayrollData> employeesListInDateRange = employeePayrollService.getEmployeesFromDateRange(startDate,endDate);
