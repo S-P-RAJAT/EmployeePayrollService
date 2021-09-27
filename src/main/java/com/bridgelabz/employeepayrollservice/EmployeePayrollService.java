@@ -90,6 +90,11 @@ public class EmployeePayrollService {
         List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
         return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
     }
+
+    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) {
+        return null;
+    }
+
     public static void main(String[] args) {
         ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
         EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
