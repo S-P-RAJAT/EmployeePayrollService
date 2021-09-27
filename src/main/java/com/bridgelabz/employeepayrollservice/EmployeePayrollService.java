@@ -92,7 +92,7 @@ public class EmployeePayrollService {
     }
 
     public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) {
-        return null;
+         return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
     }
 
     public static void main(String[] args) {

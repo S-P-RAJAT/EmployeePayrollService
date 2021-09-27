@@ -113,6 +113,7 @@ public class EmployeePayrollDBService {
             e.printStackTrace();
         }
     }
+
     private void prepareStatementToUpdateEmployeeData() {
         try {
             Connection connection = this.getConnection();
@@ -121,5 +122,19 @@ public class EmployeePayrollDBService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate,String endDate) {
+        String sql = String.format("SELECT id, name, basic_pay, start FROM employee_payroll "
+                +"WHERE start BETWEEN CAST('%s' AS DATE) AND CAST('%s' AS DATE);",startDate,endDate);
+        List<EmployeePayrollData> employeesListInGivenDateRange = new ArrayList<>();
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            employeesListInGivenDateRange = this.getEmployeePayrollData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeesListInGivenDateRange;
     }
 }
