@@ -8,6 +8,7 @@ import java.util.List;
 public class EmployeePayrollDBService {
 
     private PreparedStatement employeePayrollDataStatement;
+    private PreparedStatement employeePayrollUpdateDataStatement;
     private static EmployeePayrollDBService employeePayrollDBService;
 
     public static EmployeePayrollDBService getInstance() {
@@ -47,7 +48,7 @@ public class EmployeePayrollDBService {
         return employeePayrollList;
     }
     public int updateEmployeeData(String name, double salary) {
-        return this.updateEmployeeDataUsingStatement(name, salary);
+        return this.updateEmployeeDataUsingPreparedStatement(name, salary);
     }
 
     private int updateEmployeeDataUsingStatement(String name, double salary) {
@@ -55,6 +56,19 @@ public class EmployeePayrollDBService {
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
+        if (this.employeePayrollUpdateDataStatement == null)
+            this.prepareStatementToUpdateEmployeeData();
+        try {
+            employeePayrollUpdateDataStatement.setString(1, String.format("%.2f",salary));
+            employeePayrollUpdateDataStatement.setString(2, name);
+
+            return employeePayrollUpdateDataStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,6 +109,15 @@ public class EmployeePayrollDBService {
             Connection connection = this.getConnection();
             String sql = "select id, name, basic_pay from employee_payroll where name=?";
             employeePayrollDataStatement = connection.prepareStatement(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void prepareStatementToUpdateEmployeeData() {
+        try {
+            Connection connection = this.getConnection();
+            String sql = "\"update employee_payroll set basic_pay=? where name =?";
+            employeePayrollUpdateDataStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
