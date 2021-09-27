@@ -22,6 +22,7 @@ public class EmployeePayrollService {
     private List<EmployeePayrollData> employeePayrollList;
 
     public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
+        this();
         this.employeePayrollList = employeePayrollList;
     }
 
@@ -63,16 +64,15 @@ public class EmployeePayrollService {
             this.employeePayrollList.forEach(System.out::println);
         } else if (ioservice.equals(IOService.DB_IO)){
             try {
-                this.employeePayrollList = new EmployeePayrollDBService().readData();
+                this.employeePayrollList = employeePayrollDBService.readData();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            return employeePayrollList;
         }
         return this.employeePayrollList;
     }
     public void updateEmployeeSalary(String name, double salary) {
-        int result = new EmployeePayrollDBService().updateEmployeeData(name, salary);
+        int result = employeePayrollDBService.updateEmployeeData(name, salary);
         if (result == 0)
             return;
         EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
@@ -80,8 +80,11 @@ public class EmployeePayrollService {
             employeePayrollData.salary = salary;
     }
     private EmployeePayrollData getEmployeePayrollData(String name) {
-        return this.employeePayrollList.stream()
-                .filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name)).findFirst().orElse(null);
+        return this.employeePayrollList
+                .stream()
+                .filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name))
+                .findFirst()
+                .orElse(null);
     }
     public boolean checkEmployeePayrollInSyncWithDB(String name) {
         List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);

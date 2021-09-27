@@ -16,7 +16,7 @@ public class EmployeePayrollDBService {
         return employeePayrollDBService;
     }
 
-    public EmployeePayrollDBService() {
+    private EmployeePayrollDBService() {
 
     }
 
@@ -39,14 +39,7 @@ public class EmployeePayrollDBService {
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(sql);
-            while (result.next()) {
-                int id = result.getInt("id");
-                String name = result.getString("name");
-                double salary = result.getDouble("basic_pay");
-                LocalDate startDate = result.getDate("start").toLocalDate();
-                System.out.println(name);
-                employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
-            }
+            employeePayrollList = this.getEmployeePayrollData(result);
 
         } catch (SQLException e) {
             e.printStackTrace();

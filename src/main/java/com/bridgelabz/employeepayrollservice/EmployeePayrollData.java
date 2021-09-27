@@ -17,9 +17,7 @@ public class EmployeePayrollData {
         this.salary = salary;
     }
     public EmployeePayrollData(int id, String name, double salary, LocalDate startDate) {
-        this.id = id;
-        this.name = name;
-        this.salary = salary;
+        this(id,name,salary);
         this.startDate = startDate;
     }
 
