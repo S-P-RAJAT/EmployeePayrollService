@@ -18,6 +18,14 @@ public class EmployeePayrollService {
     public enum IOService {
         CONSOLE_IO, FILE_IO, DB_IO, REST_IO
     }
+    public enum aggregateFunction {
+        SUM("SUM"), AVERAGE("AVG"),COUNT("COUNT"),MAX("MAX"),MIN("MIN");
+
+        public String name;
+        aggregateFunction(String name){
+            this.name = name;
+        }
+    }
 
     private List<EmployeePayrollData> employeePayrollList;
 
@@ -96,22 +104,22 @@ public class EmployeePayrollService {
     }
 
     public double getSalarySumBasedOnGender(char gender) {
-        return 0;
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.SUM,gender);
     }
 
     public double getAverageSalaryBasedOnGender(char gender) {
-        return 0;
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.AVERAGE,gender);
     }
 
-    public double getEmployeeCountBasedOnGender(char gender) {
-        return 0;
+    public int getEmployeeCountBasedOnGender(char gender) {
+        return (int) employeePayrollDBService.applyAggregateFunction(aggregateFunction.COUNT,gender);
     }
 
     public double getMinimumSalaryBasedOnGender(char gender) {
-        return 0;
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MIN,gender);
     }
     public double getMaximumSalaryBasedOnGender(char gender) {
-        return 0;
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX,gender);
     }
     public static void main(String[] args) {
         ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();

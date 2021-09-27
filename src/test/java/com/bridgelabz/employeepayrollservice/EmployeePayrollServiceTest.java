@@ -69,20 +69,20 @@ public class EmployeePayrollServiceTest {
         double sum = employeePayrollService.getSalarySumBasedOnGender('M');
         assertEquals(4000000, sum,0.0);
         sum = employeePayrollService.getSalarySumBasedOnGender('F');
-        assertEquals(4000000, sum,0.0);
+        assertEquals(400000, sum,0.0);
     }
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetAverageSalaryBasedOnGender() {
         double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
-        assertEquals(4000000, average,0.0);
+        assertEquals(2000000, average,0.0);
         average = employeePayrollService.getAverageSalaryBasedOnGender('F');
-        assertEquals(4000000, average,0.0);
+        assertEquals(400000, average,0.0);
     }
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetEmployeeCountBasedOnGender() {
-        double count = employeePayrollService.getEmployeeCountBasedOnGender('M');
+        int count = employeePayrollService.getEmployeeCountBasedOnGender('M');
         assertEquals(2, count,0.0);
         count = employeePayrollService.getEmployeeCountBasedOnGender('F');
         assertEquals(1, count,0.0);
@@ -90,16 +90,16 @@ public class EmployeePayrollServiceTest {
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetMinimumSalaryBasedOnGender() {
-        double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
-        assertEquals(1000000, average,0.0);
-        average = employeePayrollService.getAverageSalaryBasedOnGender('F');
-        assertEquals(400000, average,0.0);
+        double minimumSalary = employeePayrollService.getMinimumSalaryBasedOnGender('M');
+        assertEquals(1000000, minimumSalary,0.0);
+        minimumSalary = employeePayrollService.getMinimumSalaryBasedOnGender('F');
+        assertEquals(400000, minimumSalary,0.0);
     }
     @Test
     public void givenGender_WhenRetrieved_ShouldGetMaximumSalaryBasedOnGender() {
-        double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
-        assertEquals(3000000, average,0.0);
-        average = employeePayrollService.getAverageSalaryBasedOnGender('F');
-        assertEquals(400000, average,0.0);
+        double maximumSalary = employeePayrollService.getMaximumSalaryBasedOnGender('M');
+        assertEquals(3000000, maximumSalary,0.0);
+        maximumSalary = employeePayrollService.getMaximumSalaryBasedOnGender('F');
+        assertEquals(400000, maximumSalary,0.0);
     }
 }

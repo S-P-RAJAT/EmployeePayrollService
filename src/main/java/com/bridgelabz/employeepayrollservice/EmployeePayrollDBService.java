@@ -137,4 +137,22 @@ public class EmployeePayrollDBService {
         }
         return employeesListInGivenDateRange;
     }
+
+    public double applyAggregateFunction(EmployeePayrollService.aggregateFunction function, char gender) {
+        String sql = String.format("SELECT  %s(DISTINCT basic_pay) AS VALUE FROM employee_payroll WHERE gender = \"%s\" GROUP BY gender;", function.name, gender);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            try {
+                while (resultSet.next()) {
+                   return resultSet.getDouble("VALUE");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
