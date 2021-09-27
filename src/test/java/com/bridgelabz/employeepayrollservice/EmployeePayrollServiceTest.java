@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -11,6 +12,14 @@ import static org.junit.Assert.assertTrue;
 import com.bridgelabz.employeepayrollservice.EmployeePayrollService.*;
 
 public class EmployeePayrollServiceTest {
+
+    private static EmployeePayrollService employeePayrollService;
+
+    @BeforeClass
+    public static void beforeClass() {
+        employeePayrollService = new EmployeePayrollService();
+
+    }
 
     @Test
     public void given3EmployeesWhenWrittenToFileShouldMatchEmployeeEntries() {
@@ -28,19 +37,16 @@ public class EmployeePayrollServiceTest {
 
     @Test
     public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
-        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.FILE_IO);
         assertEquals(3, employeePayrollData.size());
     }
     @Test
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
-        EmployeePayrollService employeePayrollService=new EmployeePayrollService();
         List<EmployeePayrollData> employeePayrollData= employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         assertEquals(4, employeePayrollData.size());
     }
     @Test
     public void givenNewSalaryForEmployee_WhenUpdates_ShouldSyncWithDB() {
-        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
 
         employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         employeePayrollService.printData(IOService.FILE_IO);
@@ -51,11 +57,49 @@ public class EmployeePayrollServiceTest {
 
     @Test
     public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() {
-        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         String startDate = "2018-01-01";
         String endDate = "2019-12-01";
         List<EmployeePayrollData> employeesListInDateRange = employeePayrollService.getEmployeesFromDateRange(startDate,endDate);
         assertEquals(2, employeesListInDateRange.size());
+    }
+
+    @Test
+    public void givenGender_WhenRetrieved_ShouldGetSumOFSalaryBasedOnGender() {
+        double sum = employeePayrollService.getSalarySumBasedOnGender('M');
+        assertEquals(4000000, sum,0.0);
+        sum = employeePayrollService.getSalarySumBasedOnGender('F');
+        assertEquals(4000000, sum,0.0);
+    }
+
+    @Test
+    public void givenGender_WhenRetrieved_ShouldGetAverageSalaryBasedOnGender() {
+        double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
+        assertEquals(4000000, average,0.0);
+        average = employeePayrollService.getAverageSalaryBasedOnGender('F');
+        assertEquals(4000000, average,0.0);
+    }
+
+    @Test
+    public void givenGender_WhenRetrieved_ShouldGetEmployeeCountBasedOnGender() {
+        double count = employeePayrollService.getEmployeeCountBasedOnGender('M');
+        assertEquals(2, count,0.0);
+        count = employeePayrollService.getEmployeeCountBasedOnGender('F');
+        assertEquals(1, count,0.0);
+    }
+
+    @Test
+    public void givenGender_WhenRetrieved_ShouldGetMinimumSalaryBasedOnGender() {
+        double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
+        assertEquals(1000000, average,0.0);
+        average = employeePayrollService.getAverageSalaryBasedOnGender('F');
+        assertEquals(400000, average,0.0);
+    }
+    @Test
+    public void givenGender_WhenRetrieved_ShouldGetMaximumSalaryBasedOnGender() {
+        double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
+        assertEquals(3000000, average,0.0);
+        average = employeePayrollService.getAverageSalaryBasedOnGender('F');
+        assertEquals(400000, average,0.0);
     }
 }

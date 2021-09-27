@@ -95,6 +95,24 @@ public class EmployeePayrollService {
          return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
     }
 
+    public double getSalarySumBasedOnGender(char gender) {
+        return 0;
+    }
+
+    public double getAverageSalaryBasedOnGender(char gender) {
+        return 0;
+    }
+
+    public double getEmployeeCountBasedOnGender(char gender) {
+        return 0;
+    }
+
+    public double getMinimumSalaryBasedOnGender(char gender) {
+        return 0;
+    }
+    public double getMaximumSalaryBasedOnGender(char gender) {
+        return 0;
+    }
     public static void main(String[] args) {
         ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
         EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
