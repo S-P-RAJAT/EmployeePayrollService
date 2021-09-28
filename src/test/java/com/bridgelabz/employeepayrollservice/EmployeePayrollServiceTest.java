@@ -1,5 +1,6 @@
 package com.bridgelabz.employeepayrollservice;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -17,13 +18,13 @@ import com.bridgelabz.employeepayrollservice.EmployeePayrollService.*;
 public class EmployeePayrollServiceTest {
 
     private static EmployeePayrollService employeePayrollService;
-    private static List<EmployeePayrollData> employeePayrollData;
+    private static List<EmployeePayrollData> employeePayrollList;
 
     @BeforeClass
     public static void beforeClass() {
         employeePayrollService = new EmployeePayrollService();
         try {
-            employeePayrollData = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+            employeePayrollList = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         } catch (EmployeePayrollException e) {
             assertEquals(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE, e.type);
             e.printStackTrace();
@@ -33,7 +34,7 @@ public class EmployeePayrollServiceTest {
     @Test
     public void givenDatabase_WhenWrong_ShouldThrowCustomException() {
         try {
-            employeePayrollData = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+            employeePayrollList = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
         } catch (EmployeePayrollException e) {
             assertEquals(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE, e.type);
             e.printStackTrace();
@@ -62,7 +63,7 @@ public class EmployeePayrollServiceTest {
 
     @Test
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
-        assertEquals(4, employeePayrollData.size());
+        assertEquals(4, employeePayrollList.size());
 
     }
 
@@ -70,7 +71,7 @@ public class EmployeePayrollServiceTest {
     public void givenNewSalaryForEmployee_WhenUpdates_ShouldSyncWithDB() {
 
         try {
-            employeePayrollData = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+            employeePayrollList = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
             employeePayrollService.printData(IOService.FILE_IO);
             employeePayrollService.updateEmployeeSalary("Terisa", 400000.00);
             boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
@@ -134,6 +135,18 @@ public class EmployeePayrollServiceTest {
             employeePayrollService.addEmployee("Bruce", "M", 100000.0, startDate);
             boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
             Assert.assertTrue(result);
+        } catch (EmployeePayrollException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void givenNewEmployee_WhenAddedWithPayrollData_ShouldSyncWithDB() throws SQLException {
+        try {
+            employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+            LocalDate startDate = LocalDate.parse("2016-11-04");
+            employeePayrollService.addEmployeeAndPayRoll("Strange","M",50000.0, startDate);
+            boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Strange");
+            assertTrue(result);
         } catch (EmployeePayrollException e) {
             e.printStackTrace();
         }
