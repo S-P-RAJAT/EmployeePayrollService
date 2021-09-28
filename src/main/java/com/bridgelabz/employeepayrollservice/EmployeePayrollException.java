@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class EmployeePayrollException extends SQLException {
 
     enum ExceptionType {
-        UNKNOWN_DATABASE, SQL_EXCEPTION,INVALID_TABLE,UNSUCCESFUL_UPDATE;
+        UNKNOWN_DATABASE, SQL_EXCEPTION,INVALID_TABLE, UNSUCCESSFUL_UPDATE
     }
 
     ExceptionType type;

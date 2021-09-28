@@ -40,9 +40,8 @@ public class EmployeePayrollDBService {
         return connection;
     }
 
-    public List<EmployeePayrollData> readData() throws EmployeePayrollException {
-        String sql = "SELECT * FROM employee_payroll";
-        List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+    public List<EmployeePayrollData> getEmployeePayrollDataFromDB(String sql) throws EmployeePayrollException{
+        List<EmployeePayrollData> employeePayrollList;
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(sql);
@@ -52,6 +51,12 @@ public class EmployeePayrollDBService {
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.INVALID_TABLE, "Invalid table name! - " + e.getMessage());
         }
         return employeePayrollList;
+    }
+
+    public List<EmployeePayrollData> readData() throws EmployeePayrollException {
+        String sql = "SELECT * FROM employee_payroll";
+        return this.getEmployeePayrollDataFromDB(sql);
+
     }
     public int updateEmployeeData(String name, double salary) {
         return this.updateEmployeeDataUsingPreparedStatement(name, salary);
@@ -130,18 +135,11 @@ public class EmployeePayrollDBService {
         }
     }
 
-    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate,String endDate) {
+    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate,String endDate) throws EmployeePayrollException {
         String sql = String.format("SELECT id, name, basic_pay, start FROM employee_payroll "
                 +"WHERE start BETWEEN CAST('%s' AS DATE) AND CAST('%s' AS DATE);",startDate,endDate);
-        List<EmployeePayrollData> employeesListInGivenDateRange = new ArrayList<>();
-        try (Connection connection = this.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            employeesListInGivenDateRange = this.getEmployeePayrollData(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return employeesListInGivenDateRange;
+        return this.getEmployeePayrollDataFromDB(sql);
+
     }
 
     public double applyAggregateFunction(EmployeePayrollService.aggregateFunction function, char gender) {
@@ -150,7 +148,7 @@ public class EmployeePayrollDBService {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             try {
-                while (resultSet.next()) {
+                if (resultSet.next()) {
                    return resultSet.getDouble("VALUE");
                 }
             } catch (SQLException e) {

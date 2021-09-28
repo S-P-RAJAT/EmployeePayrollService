@@ -82,7 +82,7 @@ public class EmployeePayrollService {
     public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException {
         int result = employeePayrollDBService.updateEmployeeData(name, salary);
         if (result == 0)
-            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNSUCCESFUL_UPDATE, "Update operation failed! - ");
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNSUCCESSFUL_UPDATE, "Update operation failed! - ");
         EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
         if (employeePayrollData != null)
             employeePayrollData.salary = salary;
@@ -99,7 +99,7 @@ public class EmployeePayrollService {
         return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
     }
 
-    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) {
+    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) throws EmployeePayrollException {
          return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
     }
 

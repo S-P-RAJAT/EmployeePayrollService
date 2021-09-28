@@ -1,6 +1,5 @@
 package com.bridgelabz.employeepayrollservice;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +56,6 @@ public class EmployeePayrollServiceTest {
     }
     @Test
     public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
-
         assertEquals(4, employeePayrollData.size());
 
     }
@@ -71,7 +69,7 @@ public class EmployeePayrollServiceTest {
             boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
             assertTrue(result);
         } catch (EmployeePayrollException e){
-            assertEquals(EmployeePayrollException.ExceptionType.UNSUCCESFUL_UPDATE,e.type);
+            assertEquals(EmployeePayrollException.ExceptionType.UNSUCCESSFUL_UPDATE,e.type);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -79,7 +77,7 @@ public class EmployeePayrollServiceTest {
     }
 
     @Test
-    public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() {
+    public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() throws EmployeePayrollException {
         String startDate = "2018-01-01";
         String endDate = "2019-12-01";
         List<EmployeePayrollData> employeesListInDateRange = employeePayrollService.getEmployeesFromDateRange(startDate,endDate);
