@@ -140,7 +140,7 @@ public class EmployeePayrollDBService {
 
     public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) throws EmployeePayrollException {
         String sql = String.format("SELECT id, name, basic_pay, start_date FROM employee_payroll "
-                + "WHERE start BETWEEN CAST('%s' AS DATE) AND CAST('%s' AS DATE);", startDate, endDate);
+                + "WHERE start_date BETWEEN CAST('%s' AS DATE) AND CAST('%s' AS DATE);", startDate, endDate);
         return this.getEmployeePayrollDataFromDB(sql);
 
     }
@@ -168,6 +168,7 @@ public class EmployeePayrollDBService {
         String query = String.format("insert into employee(name,gender,employeePayrollService,startdate) "
                 + "values('%s','%s',%s,'%s')",name,gender,salary,startDate);
         try (Connection connection = this.getConnection()) {
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             int rowAffected = statement.executeUpdate(query,statement.RETURN_GENERATED_KEYS);
             if(rowAffected==1)
@@ -197,6 +198,12 @@ public class EmployeePayrollDBService {
                     employeeId = result.getInt(1);
             }
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+                return null;
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
         }
 
@@ -214,7 +221,17 @@ public class EmployeePayrollDBService {
                 employee = new EmployeePayrollData(employeeId,name,salary,startDate);
             }
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
+        }
+        try {
+            connection.commit();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
         }
         return employee;
     }
