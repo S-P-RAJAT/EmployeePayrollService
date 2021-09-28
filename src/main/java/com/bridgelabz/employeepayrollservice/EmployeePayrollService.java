@@ -29,9 +29,9 @@ public class EmployeePayrollService {
         }
     }
 
-    private List<EmployeePayrollData> employeePayrollList;
+    private List<Employee> employeePayrollList;
 
-    public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
+    public EmployeePayrollService(List<Employee> employeePayrollList) {
         this();
         this.employeePayrollList = employeePayrollList;
     }
@@ -43,7 +43,7 @@ public class EmployeePayrollService {
         String name = consoleInputReader.next();
         System.out.println("Enter Employee Salary: ");
         double salary = consoleInputReader.nextDouble();
-        employeePayrollList.add(new EmployeePayrollData(id, name, salary));
+        employeePayrollList.add(new Employee(id, name, salary));
     }
 
     void writeEmployeePayrollData(IOService ioservice) {
@@ -67,7 +67,7 @@ public class EmployeePayrollService {
         return 0;
     }
 
-    public List<EmployeePayrollData> readEmployeePayrollData(IOService ioservice) throws EmployeePayrollException {
+    public List<Employee> readEmployeePayrollData(IOService ioservice) throws EmployeePayrollException {
         if (ioservice.equals(IOService.FILE_IO)) {
             this.employeePayrollList = new EmployeePayrollFileIOService().readData();
             System.out.println("PARSED DATA FROM FILE: ");
@@ -85,23 +85,23 @@ public class EmployeePayrollService {
         int result = employeePayrollDBService.updateEmployeeData(name, salary);
         if (result == 0)
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNSUCCESSFUL_UPDATE, "Update operation failed! - ");
-        EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
-        if (employeePayrollData != null)
-            employeePayrollData.salary = salary;
+        Employee employee = this.getEmployeePayrollData(name);
+        if (employee != null)
+            employee.setSalary(salary);
     }
-    private EmployeePayrollData getEmployeePayrollData(String name) {
+    private Employee getEmployeePayrollData(String name) {
         return this.employeePayrollList
                 .stream()
-                .filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name))
+                .filter(employee -> employee.getEmployeeName().equals(name))
                 .findFirst()
                 .orElse(null);
     }
     public boolean checkEmployeePayrollInSyncWithDB(String name) {
-        List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
-        return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
+        List<Employee> employeeList = employeePayrollDBService.getEmployeePayrollData(name);
+        return employeeList.get(0).equals(getEmployeePayrollData(name));
     }
 
-    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) throws EmployeePayrollException {
+    public List<Employee> getEmployeesFromDateRange(String startDate, String endDate) throws EmployeePayrollException {
         return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
     }
 
@@ -123,19 +123,14 @@ public class EmployeePayrollService {
     public Map<String, Double> getMaximumSalaryBasedOnGender() {
         return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX);
     }
-    public void addEmployee(String name, String gender, double salary, LocalDate startDate) throws EmployeePayrollException {
-        EmployeePayrollData employee = employeePayrollDBService.addEmployee(name, gender, salary, startDate);
-        if (employee != null)
-            employeePayrollList.add(employee);
-    }
 
     public void addEmployeeAndPayRoll(String name, String gender, double salary, LocalDate startDate) throws SQLException {
-        EmployeePayrollData employee = employeePayrollDBService.addEmployeeAndPayRoll(name,gender,salary,startDate);
+        Employee employee = employeePayrollDBService.addEmployeeAndPayRoll(name,gender,salary,startDate);
         if(employee != null)
             employeePayrollList.add(employee);
     }
     public static void main(String[] args) {
-        ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+        ArrayList<Employee> employeePayrollList = new ArrayList<>();
         EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);
         Scanner consoleInputReader = new Scanner(System.in);
         employeePayrollService.readEmployeePayrollData(consoleInputReader);
