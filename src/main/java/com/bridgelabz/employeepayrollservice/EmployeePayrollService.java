@@ -102,7 +102,7 @@ public class EmployeePayrollService {
     }
 
     public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) throws EmployeePayrollException {
-         return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
+        return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
     }
 
     public Map<String, Double> getSalarySumBasedOnGender() {
@@ -124,7 +124,15 @@ public class EmployeePayrollService {
         return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX);
     }
     public void addEmployee(String name, String gender, double salary, LocalDate startDate) throws EmployeePayrollException {
-        employeePayrollList.add(employeePayrollDBService.addEmployee(name,gender,salary,startDate));
+        EmployeePayrollData employee = employeePayrollDBService.addEmployee(name, gender, salary, startDate);
+        if (employee != null)
+            employeePayrollList.add(employee);
+    }
+
+    public void addEmployeeAndPayRoll(String name, String gender, double salary, LocalDate startDate) throws SQLException {
+        EmployeePayrollData employee = employeePayrollDBService.addEmployeeAndPayRoll(name,gender,salary,startDate);
+        if(employee != null)
+            employeePayrollList.add(employee);
     }
     public static void main(String[] args) {
         ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
