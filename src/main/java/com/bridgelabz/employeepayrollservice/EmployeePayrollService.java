@@ -3,6 +3,7 @@ package com.bridgelabz.employeepayrollservice;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class EmployeePayrollService {
@@ -103,23 +104,23 @@ public class EmployeePayrollService {
          return employeePayrollDBService.getEmployeesFromDateRange(startDate, endDate);
     }
 
-    public double getSalarySumBasedOnGender(char gender) {
-        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.SUM,gender);
+    public Map<String, Double> getSalarySumBasedOnGender() {
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.SUM);
     }
 
-    public double getAverageSalaryBasedOnGender(char gender) {
-        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.AVERAGE,gender);
+    public Map<String, Double> getAverageSalaryBasedOnGender() {
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.AVERAGE);
     }
 
-    public int getEmployeeCountBasedOnGender(char gender) {
-        return (int) employeePayrollDBService.applyAggregateFunction(aggregateFunction.COUNT,gender);
+    public Map<String, Double> getEmployeeCountBasedOnGender() {
+        return  employeePayrollDBService.applyAggregateFunction(aggregateFunction.COUNT);
     }
 
-    public double getMinimumSalaryBasedOnGender(char gender) {
-        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MIN,gender);
+    public Map<String, Double> getMinimumSalaryBasedOnGender() {
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MIN);
     }
-    public double getMaximumSalaryBasedOnGender(char gender) {
-        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX,gender);
+    public Map<String, Double> getMaximumSalaryBasedOnGender() {
+        return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX);
     }
     public static void main(String[] args) {
         ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();

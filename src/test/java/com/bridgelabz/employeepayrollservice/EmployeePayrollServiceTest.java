@@ -2,6 +2,7 @@ package com.bridgelabz.employeepayrollservice;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -86,40 +87,35 @@ public class EmployeePayrollServiceTest {
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetSumOFSalaryBasedOnGender() {
-        double sum = employeePayrollService.getSalarySumBasedOnGender('M');
-        assertEquals(4000000, sum,0.0);
-        sum = employeePayrollService.getSalarySumBasedOnGender('F');
-        assertEquals(400000, sum,0.0);
+        Map<String, Double> sum = employeePayrollService.getSalarySumBasedOnGender();
+        assertEquals(4000000, sum.get("M"),0.0);
+        assertEquals(400000, sum.get("F"),0.0);
     }
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetAverageSalaryBasedOnGender() {
-        double average = employeePayrollService.getAverageSalaryBasedOnGender('M');
-        assertEquals(2000000, average,0.0);
-        average = employeePayrollService.getAverageSalaryBasedOnGender('F');
-        assertEquals(400000, average,0.0);
+        Map<String, Double> average = employeePayrollService.getAverageSalaryBasedOnGender();
+        assertEquals(2000000, average.get("M"),0.0);
+        assertEquals(400000, average.get("F"),0.0);
     }
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetEmployeeCountBasedOnGender() {
-        int count = employeePayrollService.getEmployeeCountBasedOnGender('M');
-        assertEquals(2, count,0.0);
-        count = employeePayrollService.getEmployeeCountBasedOnGender('F');
-        assertEquals(1, count,0.0);
+        Map<String, Double> count = employeePayrollService.getEmployeeCountBasedOnGender();
+        assertEquals(2, count.get("M"),0.0);
+        assertEquals(1, count.get("F"),0.0);
     }
 
     @Test
     public void givenGender_WhenRetrieved_ShouldGetMinimumSalaryBasedOnGender() {
-        double minimumSalary = employeePayrollService.getMinimumSalaryBasedOnGender('M');
-        assertEquals(1000000, minimumSalary,0.0);
-        minimumSalary = employeePayrollService.getMinimumSalaryBasedOnGender('F');
-        assertEquals(400000, minimumSalary,0.0);
+        Map<String, Double> minimumSalary = employeePayrollService.getMinimumSalaryBasedOnGender();
+        assertEquals(1000000, minimumSalary.get("M"),0.0);
+        assertEquals(400000, minimumSalary.get("F"),0.0);
     }
     @Test
     public void givenGender_WhenRetrieved_ShouldGetMaximumSalaryBasedOnGender() {
-        double maximumSalary = employeePayrollService.getMaximumSalaryBasedOnGender('M');
-        assertEquals(3000000, maximumSalary,0.0);
-        maximumSalary = employeePayrollService.getMaximumSalaryBasedOnGender('F');
-        assertEquals(400000, maximumSalary,0.0);
+        Map<String, Double> maximumSalary = employeePayrollService.getMaximumSalaryBasedOnGender();
+        assertEquals(3000000, maximumSalary.get("M"),0.0);
+        assertEquals(400000, maximumSalary.get("F"),0.0);
     }
 }

@@ -3,7 +3,9 @@ package com.bridgelabz.employeepayrollservice;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeePayrollDBService {
 
@@ -31,8 +33,8 @@ public class EmployeePayrollDBService {
             connection = DriverManager.getConnection(jdbcURL, userName, password);
             System.out.println("Connection is successfull" + connection);
         } catch (SQLSyntaxErrorException e) {
-            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE, "Entered is a "+e.getMessage());
-        } catch (SQLException e){
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNKNOWN_DATABASE, "Entered is a " + e.getMessage());
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.SQL_EXCEPTION, "Invalid credentials! - " + e.getMessage());
         }
@@ -40,7 +42,7 @@ public class EmployeePayrollDBService {
         return connection;
     }
 
-    public List<EmployeePayrollData> getEmployeePayrollDataFromDB(String sql) throws EmployeePayrollException{
+    public List<EmployeePayrollData> getEmployeePayrollDataFromDB(String sql) throws EmployeePayrollException {
         List<EmployeePayrollData> employeePayrollList;
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
@@ -58,6 +60,7 @@ public class EmployeePayrollDBService {
         return this.getEmployeePayrollDataFromDB(sql);
 
     }
+
     public int updateEmployeeData(String name, double salary) {
         return this.updateEmployeeDataUsingPreparedStatement(name, salary);
     }
@@ -72,11 +75,12 @@ public class EmployeePayrollDBService {
         }
         return 0;
     }
+
     private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
         if (this.employeePayrollUpdateDataStatement == null)
             this.prepareStatementToUpdateEmployeeData();
         try {
-            employeePayrollUpdateDataStatement.setString(1, String.format("%.2f",salary));
+            employeePayrollUpdateDataStatement.setString(1, String.format("%.2f", salary));
             employeePayrollUpdateDataStatement.setString(2, name);
 
             return employeePayrollUpdateDataStatement.executeUpdate();
@@ -135,28 +139,28 @@ public class EmployeePayrollDBService {
         }
     }
 
-    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate,String endDate) throws EmployeePayrollException {
+    public List<EmployeePayrollData> getEmployeesFromDateRange(String startDate, String endDate) throws EmployeePayrollException {
         String sql = String.format("SELECT id, name, basic_pay, start FROM employee_payroll "
-                +"WHERE start BETWEEN CAST('%s' AS DATE) AND CAST('%s' AS DATE);",startDate,endDate);
+                + "WHERE start BETWEEN CAST('%s' AS DATE) AND CAST('%s' AS DATE);", startDate, endDate);
         return this.getEmployeePayrollDataFromDB(sql);
 
     }
 
-    public double applyAggregateFunction(EmployeePayrollService.aggregateFunction function, char gender) {
-        String sql = String.format("SELECT  %s(DISTINCT basic_pay) AS VALUE FROM employee_payroll WHERE gender = \"%s\" GROUP BY gender;", function.name, gender);
+    public Map<String, Double> applyAggregateFunction(EmployeePayrollService.aggregateFunction function) {
+        String sql = String.format("SELECT  gender, %s(DISTINCT basic_pay) AS RESULT FROM employee_payroll GROUP BY gender;", function.name);
+        Map<String, Double> genderToResultMap = new HashMap<String, Double>();
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            try {
-                if (resultSet.next()) {
-                   return resultSet.getDouble("VALUE");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            while (resultSet.next()) {
+                String gender = resultSet.getString("gender");
+                double result = resultSet.getDouble("RESULT");
+                genderToResultMap.put(gender, result);
             }
+            return genderToResultMap;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
+        return null;
     }
 }
