@@ -38,7 +38,6 @@ public class EmployeePayrollDBService {
             e.printStackTrace();
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.SQL_EXCEPTION, "Invalid credentials! - " + e.getMessage());
         }
-
         return connection;
     }
 
@@ -148,7 +147,7 @@ public class EmployeePayrollDBService {
 
     public Map<String, Double> applyAggregateFunction(EmployeePayrollService.aggregateFunction function) {
         String sql = String.format("SELECT  gender, %s(DISTINCT basic_pay) AS RESULT FROM employee_payroll GROUP BY gender;", function.name);
-        Map<String, Double> genderToResultMap = new HashMap<String, Double>();
+        Map<String, Double> genderToResultMap = new HashMap<>();
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -162,5 +161,25 @@ public class EmployeePayrollDBService {
             e.printStackTrace();
         }
         return null;
+    }
+    public EmployeePayrollData addEmployee(String name, String gender, double salary, LocalDate startDate) throws EmployeePayrollException {
+        int employeeId = 0;
+        EmployeePayrollData employee;
+        String query = String.format("insert into employee_payroll(name,gender,salary,startdate) "
+                + "values('%s','%s',%s,'%s')",name,gender,salary,startDate);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            int rowAffected = statement.executeUpdate(query,statement.RETURN_GENERATED_KEYS);
+            if(rowAffected==1)
+            {
+                ResultSet result = statement.getGeneratedKeys();
+                if(result.next())
+                    employeeId = result.getInt(1);
+            }
+            employee = new EmployeePayrollData(employeeId,name,salary,startDate);
+            return employee;
+        } catch (SQLException e) {
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
+        }
     }
 }

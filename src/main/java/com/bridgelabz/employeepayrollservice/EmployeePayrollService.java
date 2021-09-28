@@ -1,6 +1,7 @@
 package com.bridgelabz.employeepayrollservice;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Scanner;
 
 public class EmployeePayrollService {
 
-    private EmployeePayrollDBService employeePayrollDBService;
+    private final EmployeePayrollDBService employeePayrollDBService;
 
 
     public EmployeePayrollService() {
@@ -121,6 +122,9 @@ public class EmployeePayrollService {
     }
     public Map<String, Double> getMaximumSalaryBasedOnGender() {
         return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX);
+    }
+    public void addEmployee(String name, String gender, double salary, LocalDate startDate) throws EmployeePayrollException {
+        employeePayrollList.add(employeePayrollDBService.addEmployee(name,gender,salary,startDate));
     }
     public static void main(String[] args) {
         ArrayList<EmployeePayrollData> employeePayrollList = new ArrayList<>();
