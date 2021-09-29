@@ -124,8 +124,7 @@ public class EmployeePayrollService {
         return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX);
     }
 
-    public void addEmployeeAndPayRoll(String employeeName, String gender, double salary, LocalDate startDate,int companyId )
-    {
+    public void addEmployeeAndPayRoll(String employeeName, String gender, double salary, LocalDate startDate,int companyId ) throws EmployeePayrollException {
         employeePayrollList.add(employeePayrollDBService.addEmployeeToPayroll(employeeName, gender, salary, startDate, companyId));
     }
     public static void main(String[] args) {

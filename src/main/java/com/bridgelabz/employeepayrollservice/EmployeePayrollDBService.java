@@ -157,7 +157,7 @@ public class EmployeePayrollDBService {
     }
 
     public Employee addEmployeeToPayroll(String employeeName, String gender, double salary, LocalDate startDate,
-            int companyId) {
+            int companyId) throws EmployeePayrollException {
         int employeeId = -1;
         Employee employeeData = null;
         try (Connection connection = this.getConnection()){
@@ -169,12 +169,14 @@ public class EmployeePayrollDBService {
             connection.commit();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
+
         }
         return employeeData;
     }
 
     private Employee insertToPayrollTable(String employeeName, double salary, LocalDate startDate, int employeeId,
-                                          Connection connection, Employee employeeData) {
+                                          Connection connection, Employee employeeData) throws EmployeePayrollException {
         try (Statement statement = connection.createStatement()) {
             double deductions = salary * 0.2;
             double taxablePay = salary - deductions;
@@ -197,12 +199,13 @@ public class EmployeePayrollDBService {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
         }
         return employeeData;
     }
 
     private int insertToEmployeeTable(String employeeName, String gender, double salary, LocalDate startDate,
-                                      int companyId, int employeeId, Connection connection) {
+                                      int companyId, int employeeId, Connection connection) throws EmployeePayrollException {
         try (Statement statement = connection.createStatement()) {
             String sql = String.format("INSERT INTO employee(employee_name,gender,basic_pay,start_date,company_id)"
                     +" VALUES ('%s','%s','%s','%s','%s');", employeeName, gender, salary, startDate, companyId);
@@ -220,6 +223,8 @@ public class EmployeePayrollDBService {
 
                 ex.printStackTrace();
             }
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
+
         }
         return employeeId;
     }
