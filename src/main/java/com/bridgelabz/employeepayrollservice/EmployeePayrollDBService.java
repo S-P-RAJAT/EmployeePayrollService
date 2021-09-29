@@ -67,17 +67,6 @@ public class EmployeePayrollDBService {
         return this.updateEmployeeDataUsingPreparedStatement(name, salary);
     }
 
-    private int updateEmployeeDataUsingStatement(String name, double salary) {
-        String sql = String.format("update employee set basic_pay= %.2f where employee_name ='%s';", salary, name);
-        try (Connection connection = this.getConnection()) {
-            Statement statement = connection.createStatement();
-            return statement.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
         if (this.employeePayrollUpdateDataStatement == null)
             this.prepareStatementToUpdateEmployeeData();
@@ -168,35 +157,18 @@ public class EmployeePayrollDBService {
     }
 
     public Employee addEmployeeToPayroll(String employeeName, String gender, double salary, LocalDate startDate,
-                                         int companyId) {
+            int companyId) {
         int employeeId = -1;
-        Connection connection = null;
         Employee employeeData = null;
-
-        try {
-            connection = this.getConnection();
+        try (Connection connection = this.getConnection()){
             connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        employeeId = insertToEmployeeTable(employeeName, gender, salary, startDate, companyId, employeeId, connection);
-        employeeData = insertToPayrollTable(employeeName, salary, startDate, employeeId, connection, employeeData);
-        try {
-            assert connection != null;
+            employeeId = insertToEmployeeTable(
+                    employeeName, gender, salary, startDate, companyId, employeeId, connection);
+            employeeData = insertToPayrollTable(
+                    employeeName, salary, startDate, employeeId, connection, employeeData);
             connection.commit();
-
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return employeeData;
     }
