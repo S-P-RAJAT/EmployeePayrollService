@@ -85,7 +85,7 @@ public class EmployeePayrollService {
         }
         return this.employeePayrollList;
     }
-    public void updateEmployeeSalary(String name, double salary) throws EmployeePayrollException {
+    public void updateEmployeeSalary(String name, double salary) throws SQLException {
         int result = employeePayrollDBService.updateEmployeeData(name, salary);
         if (result == 0)
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.UNSUCCESSFUL_UPDATE, "Update operation failed! - ");
