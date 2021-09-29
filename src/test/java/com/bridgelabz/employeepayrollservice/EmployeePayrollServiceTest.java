@@ -139,4 +139,15 @@ public class EmployeePayrollServiceTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void whenEmployeeIsRemoved_DatabaseShouldContainEmployeeDetailAsInactive() throws EmployeePayrollException {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        int count = employeePayrollService.readEmployeePayrollData( IOService.DB_IO).size();
+        List<Employee> employeeListFromDBEmployees=	employeePayrollService .removeEmployee(116);
+        List<Employee> employeeListInMemory = employeePayrollService.getEmployeePayrollList();
+        assertEquals(employeeListFromDBEmployees.size(), count-1);
+        assertEquals(employeeListInMemory.size(), count-1);
+
+    }
 }

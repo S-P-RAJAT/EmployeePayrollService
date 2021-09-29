@@ -161,8 +161,9 @@ public class Employee {
         if (getClass() != obj.getClass())
             return false;
         Employee other = (Employee) obj;
-        return Objects.equals(company, other.company) && Objects.equals(departments, other.departments)
-                && employeeId == other.employeeId && Objects.equals(employeeName, other.employeeName);
+        return Objects.equals(company, other.company)
+                && employeeId == other.employeeId
+                && Objects.equals(employeeName, other.employeeName);
     }
 
 

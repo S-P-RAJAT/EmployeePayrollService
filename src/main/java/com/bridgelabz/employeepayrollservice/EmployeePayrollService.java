@@ -36,6 +36,10 @@ public class EmployeePayrollService {
         this.employeePayrollList = employeePayrollList;
     }
 
+    public List<Employee> getEmployeePayrollList() {
+        return employeePayrollList;
+    }
+
     private void readEmployeePayrollData(Scanner consoleInputReader) {
         System.out.println("Enter Employee ID: ");
         int id = consoleInputReader.nextInt();
@@ -127,6 +131,24 @@ public class EmployeePayrollService {
     public void addEmployeeAndPayRoll(String employeeName, String gender, double salary, LocalDate startDate,int companyId ) throws EmployeePayrollException {
         employeePayrollList.add(employeePayrollDBService.addEmployeeToPayroll(employeeName, gender, salary, startDate, companyId));
     }
+
+    public void removeEmployeeFromList(int id)
+    {
+        for(int index=0;index<employeePayrollList.size();index++)
+        {
+            if(employeePayrollList.get(index).getEmployeeId()==id)
+            {
+                employeePayrollList.remove(index);
+                break;
+            }
+        }
+    }
+
+    public List<Employee> removeEmployee(int id) throws EmployeePayrollException {
+        this.removeEmployeeFromList(id);
+        return employeePayrollDBService.removeEmployeeAndPayroll(id);
+    }
+
     public static void main(String[] args) {
         ArrayList<Employee> employeePayrollList = new ArrayList<>();
         EmployeePayrollService employeePayrollService = new EmployeePayrollService(employeePayrollList);

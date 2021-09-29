@@ -58,7 +58,7 @@ public class EmployeePayrollDBService {
     }
 
     public List<Employee> readData() throws EmployeePayrollException {
-        String sql = "SELECT * FROM employee;";
+        String sql = "SELECT * FROM employee where is_active=true;";
         return this.getEmployeePayrollDataFromDB(sql);
 
     }
@@ -157,7 +157,7 @@ public class EmployeePayrollDBService {
     }
 
     public Employee addEmployeeToPayroll(String employeeName, String gender, double salary, LocalDate startDate,
-            int companyId) throws EmployeePayrollException {
+                                         int companyId) throws EmployeePayrollException {
         int employeeId = -1;
         Employee employeeData = null;
         try (Connection connection = this.getConnection()){
@@ -218,14 +218,63 @@ public class EmployeePayrollDBService {
             e.printStackTrace();
             try {
                 connection.rollback();
-
             } catch (Exception ex) {
-
                 ex.printStackTrace();
             }
             throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
-
         }
         return employeeId;
+    }
+
+    public List<Employee> removeEmployeeAndPayroll(int id) throws EmployeePayrollException {
+
+        try (Connection connection = this.getConnection()){
+            connection.setAutoCommit(false);
+            removeEmployee(id,connection);
+            removePayroll(id,connection);
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.ADD_FAILED,e.getMessage());
+
+        }
+        return this.readData();
+    }
+
+    private void removePayroll(int id,Connection connection) throws EmployeePayrollException {
+        String sql = String.format("UPDATE employee SET is_active=false WHERE id = '%d';",id);
+        try (Statement statement=connection.createStatement()) {
+            statement.executeUpdate(sql);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.REMOVE_FAILED,e.getMessage());
+
+        }
+    }
+
+    private void removeEmployee(int id, Connection connection) throws EmployeePayrollException {
+        String sql = String.format("DELETE FROM payroll WHERE id = '%d';",id);
+        try (Statement statement=connection.createStatement()) {
+            statement.executeUpdate(sql);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            throw new EmployeePayrollException(EmployeePayrollException.ExceptionType.REMOVE_FAILED,e.getMessage());
+        }
     }
 }
