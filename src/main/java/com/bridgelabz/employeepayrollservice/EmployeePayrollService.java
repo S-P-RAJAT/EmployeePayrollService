@@ -124,10 +124,9 @@ public class EmployeePayrollService {
         return employeePayrollDBService.applyAggregateFunction(aggregateFunction.MAX);
     }
 
-    public void addEmployeeAndPayRoll(String name, String gender, double salary, LocalDate startDate) throws SQLException {
-        Employee employee = employeePayrollDBService.addEmployeeAndPayRoll(name,gender,salary,startDate);
-        if(employee != null)
-            employeePayrollList.add(employee);
+    public void addEmployeeAndPayRoll(String employeeName, String gender, double salary, LocalDate startDate,int companyId )
+    {
+        employeePayrollList.add(employeePayrollDBService.addEmployeeToPayroll(employeeName, gender, salary, startDate, companyId));
     }
     public static void main(String[] args) {
         ArrayList<Employee> employeePayrollList = new ArrayList<>();

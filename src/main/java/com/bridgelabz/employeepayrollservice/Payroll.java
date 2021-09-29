@@ -1,30 +1,19 @@
 package com.bridgelabz.employeepayrollservice;
 
 public class Payroll {
-    private int employeeId;
     private double basicPay;
     private double deductions;
     private double taxablePay;
     private double tax;
     private double netPay;
 
-    public Payroll(int employeeId, double basicPay, double deductions, double taxablePay, double tax, double netPay)
+    public Payroll(double basicPay, double deductions, double taxablePay, double tax, double netPay)
     {
-
-        this.employeeId = employeeId;
         this.basicPay = basicPay;
         this.deductions = deductions;
         this.taxablePay = taxablePay;
         this.tax = tax;
         this.netPay = netPay;
-    }
-    public int getEmployeeId()
-    {
-        return employeeId;
-    }
-    public void setEmployeeId(int employeeId)
-    {
-        this.employeeId = employeeId;
     }
     public double getBasicPay()
     {

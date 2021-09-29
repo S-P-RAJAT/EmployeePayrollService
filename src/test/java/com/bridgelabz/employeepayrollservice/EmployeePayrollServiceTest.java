@@ -128,11 +128,11 @@ public class EmployeePayrollServiceTest {
     }
 
     @Test
-    public void givenNewEmployee_WhenAddedWithPayrollData_ShouldSyncWithDB() throws SQLException {
+    public void givenNewEmployee_WhenAddedWithPayrollData_ShouldSyncWithDB() {
         try {
             employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
             LocalDate startDate = LocalDate.parse("2016-11-04");
-            employeePayrollService.addEmployeeAndPayRoll("Strange","M",50000.0, startDate);
+            employeePayrollService.addEmployeeAndPayRoll("Strange","M",50000.0, startDate,1);
             boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Strange");
             assertTrue(result);
         } catch (EmployeePayrollException e) {
